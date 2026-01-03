@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="ur" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>میرا آن لائن سٹور</title>
+    <style>
+        /* موبائل فرینڈلی ڈیزائن (CSS) */
+        body { font-family: 'Arial', sans-serif; margin: 0; background: #f8f9fa; color: #333; line-height: 1.6; }
+        header { background: #28a745; color: white; text-align: center; padding: 25px 10px; border-bottom: 5px solid #218838; }
+        .container { padding: 15px; max-width: 800px; margin: auto; }
+        h2 { border-bottom: 2px solid #28a745; padding-bottom: 10px; color: #28a745; }
+        
+        /* پروڈکٹ کارڈز */
+        .product-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px; }
+        .product { background: white; border-radius: 12px; padding: 10px; text-align: center; box-shadow: 0 4px 6px rgba(0,0,0,0.1); border: 1px solid #eee; }
+        .product img { width: 100%; height: 130px; object-fit: cover; border-radius: 8px; }
+        .product h3 { font-size: 16px; margin: 10px 0; height: 40px; overflow: hidden; }
+        .price { font-weight: bold; color: #28a745; font-size: 18px; margin-bottom: 10px; }
+        
+        /* بٹن */
+        button { background: #28a745; color: white; border: none; padding: 10px; border-radius: 5px; width: 100%; cursor: pointer; font-weight: bold; }
+        button:active { transform: scale(0.95); }
+        .checkout-btn { background: #007bff; margin-top: 15px; padding: 15px; font-size: 18px; }
+        .wa-btn { background: #25D366; margin-top: 10px; }
+
+        /* کارٹ اور فارم */
+        .cart-section, #order-form { background: white; padding: 20px; border-radius: 12px; margin-top: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        input { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box; }
+        #order-form { display: none; }
+        .total-bill { font-size: 20px; font-weight: bold; color: #d9534f; }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>🛍️ میرا پاکستان اسٹور</h1>
+    <p>باکیفیت اشیاء، سب سے کم قیمت پر!</p>
+</header>
+
+<div class="container">
+    <h2>ہماری خاص پروڈکٹس</h2>
+    
+    <div class="product-grid">
+        <div class="product">
+            <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500" alt="گھڑی">
+            <h3>سمارٹ واچ (A1)</h3>
+            <p class="price">2,500 روپے</p>
+            <button onclick="addToCart('سمارٹ واچ', 2500)">کارٹ میں ڈالیں</button>
+        </div>
+
+        <div class="product">
+            <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500" alt="ہیڈ فون">
+            <h3>وائرلیس ہیڈ فونز</h3>
+            <p class="price">1,800 روپے</p>
+            <button onclick="addToCart('وائرلیس ہیڈ فونز', 1800)">کارٹ میں ڈالیں</button>
+        </div>
+        
+        <div class="product">
+            <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500" alt="جوتے">
+            <h3>سپورٹس جوتے</h3>
+            <p class="price">3,200 روپے</p>
+            <button onclick="addToCart('سپورٹس جوتے', 3200)">کارٹ میں ڈالیں</button>
+        </div>
+
+        <div class="product">
+            <img src="https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=500" alt="ٹی شرٹ">
+            <h3>کاٹن ٹی شرٹ</h3>
+            <p class="price">1,200 روپے</p>
+            <button onclick="addToCart('کاٹن ٹی شرٹ', 1200)">کارٹ میں ڈالیں</button>
+        </div>
+    </div>
+
+    <div class="cart-section">
+        <h3>🛒 آپ کا کارٹ</h3>
+        <div id="cart-list">کارٹ خالی ہے</div>
+        <hr>
+        <p class="total-bill">ٹوٹل: <span id="total-amount">0</span> روپے</p>
+        <button class="checkout-btn" onclick="openForm()">آرڈر کنفرم کریں</button>
+    </div>
+
+    <div id="order-form">
+        <h3>شپنگ کی تفصیلات</h3>
+        <input type="text" id="cust-name" placeholder="آپ کا نام" required>
+        <input type="number" id="cust-phone" placeholder="واٹس ایپ نمبر (03xxxxxxxxx)" required>
+        <input type="text" id="cust-address" placeholder="گھر کا مکمل پتہ اور شہر" required>
+        <button class="wa-btn" onclick="sendOrder()">WhatsApp پر آرڈر بھیجیں 💬</button>
+    </div>
+</div>
+
+<script>
+    let cart = [];
+    let total = 0;
+
+    function addToCart(name, price) {
+        cart.push({name, price});
+        total += price;
+        renderCart();
+        alert(name + " کارٹ میں شامل کر دی گئی ہے!");
+    }
+
+    function renderCart() {
+        const cartList = document.getElementById('cart-list');
+        if(cart.length === 0) {
+            cartList.innerHTML = "کارٹ خالی ہے";
+            return;
+        }
+        cartList.innerHTML = cart.map(item => `<div>• ${item.name} - ${item.price} روپے</div>`).join('');
+        document.getElementById('total-amount').innerText = total;
+    }
+
+    function openForm() {
+        if(cart.length === 0) return alert("کارٹ خالی ہے!");
+        document.getElementById('order-form').style.display = 'block';
+        document.getElementById('order-form').scrollIntoView();
+    }
+
+    function sendOrder() {
+        const name = document.getElementById('cust-name').value;
+        const phone = document.getElementById('cust-phone').value;
+        const address = document.getElementById('cust-address').value;
+
+        if(!name || !phone || !address) return alert("براہ کرم تمام معلومات بھریں!");
+
+        // یہاں اپنا اصلی واٹس ایپ نمبر لکھیں
+        const myWhatsApp = "923001234567"; 
+
+        let message = `*نیا آرڈر موصول ہوا!*%0A%0A`;
+        message += `*نام:* ${name}%0A`;
+        message += `*فون:* ${phone}%0A`;
+        message += `*پتہ:* ${address}%0A%0A`;
+        message += `*آئٹمز:*%0A`;
+        cart.forEach(item => message += `- ${item.name}: ${item.price}/-%0A`);
+        message += `%0A*کل رقم: ${total} روپے*`;
+
+        const waUrl = `https://wa.me/${myWhatsApp}?text=${message}`;
+        window.open(waUrl, '_blank');
+    }
+</script>
+
+</body>
+</html>
