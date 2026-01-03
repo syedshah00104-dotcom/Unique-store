@@ -140,3 +140,128 @@
 
 </body>
 </html>
+<!DOCTYPE html>
+<html lang="ur" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>میرا ایڈمن اسٹور</title>
+    <style>
+        body { font-family: 'Arial', sans-serif; margin: 0; background: #f8f9fa; color: #333; }
+        header { background: #28a745; color: white; text-align: center; padding: 20px; }
+        .container { padding: 15px; max-width: 800px; margin: auto; }
+        .product-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .product { background: white; border-radius: 12px; padding: 10px; text-align: center; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .product img { width: 100%; height: 130px; object-fit: cover; border-radius: 8px; }
+        button { background: #28a745; color: white; border: none; padding: 10px; border-radius: 5px; width: 100%; cursor: pointer; margin-top: 10px; }
+        
+        /* Admin Panel Style */
+        #admin-panel { display: none; background: #343a40; color: white; padding: 20px; border-radius: 15px; margin-bottom: 20px; }
+        #admin-panel input { width: 100%; padding: 10px; margin: 5px 0; border-radius: 5px; border: none; }
+        .admin-toggle { background: #6c757d; font-size: 12px; margin-top: 50px; opacity: 0.5; }
+        
+        #order-form { display: none; background: white; padding: 20px; border-radius: 12px; margin-top: 20px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        input { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box; }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>🛍️ میرا پاکستان اسٹور (ایڈمن کنٹرول)</h1>
+</header>
+
+<div class="container">
+    
+    <div id="admin-panel">
+        <h3>➕ نئی پروڈکٹ ایڈ کریں</h3>
+        <input type="text" id="new-p-name" placeholder="پروڈکٹ کا نام">
+        <input type="number" id="new-p-price" placeholder="قیمت (روپے)">
+        <input type="text" id="new-p-img" placeholder="تصویر کا لنک (URL)">
+        <button onclick="addNewProductManually()" style="background: #ffc107; color: black;">اسٹور میں شامل کریں</button>
+    </div>
+
+    <div class="product-grid" id="main-store">
+        <div class="product">
+            <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500" alt="گھڑی">
+            <h3>سمارٹ واچ</h3>
+            <p>2,500 روپے</p>
+            <button onclick="addToCart('سمارٹ واچ', 2500)">کارٹ میں ڈالیں</button>
+        </div>
+    </div>
+
+    <div style="background: white; padding: 15px; border-radius: 12px; margin-top: 20px;">
+        <h3>🛒 آپ کا کارٹ</h3>
+        <div id="cart-list">خالی ہے</div>
+        <p><strong>ٹوٹل: <span id="total-amount">0</span> روپے</strong></p>
+        <button onclick="openForm()" style="background: #007bff;">آرڈر بک کریں</button>
+    </div>
+
+    <div id="order-form">
+        <h3>شپنگ کی تفصیلات</h3>
+        <input type="text" id="cust-name" placeholder="نام">
+        <input type="number" id="cust-phone" placeholder="واٹس ایپ نمبر">
+        <input type="text" id="cust-address" placeholder="پتہ">
+        <button onclick="sendOrder()" style="background: #25D366;">WhatsApp پر بھیجیں 💬</button>
+    </div>
+
+    <button class="admin-toggle" onclick="accessAdmin()">Admin Login</button>
+</div>
+
+<script>
+    let cart = [];
+    let total = 0;
+
+    function accessAdmin() {
+        let pass = prompt("ایڈمن پاس ورڈ درج کریں:");
+        if (pass === "1234") {
+            document.getElementById('admin-panel').style.display = 'block';
+            alert("ایڈمن پینل کھل گیا ہے!");
+        } else {
+            alert("غلط پاس ورڈ!");
+        }
+    }
+
+    function addNewProductManually() {
+        const name = document.getElementById('new-p-name').value;
+        const price = document.getElementById('new-p-price').value;
+        const img = document.getElementById('new-p-img').value || 'https://via.placeholder.com/150';
+
+        if(name && price) {
+            const store = document.getElementById('main-store');
+            const newDiv = document.createElement('div');
+            newDiv.className = 'product';
+            newDiv.innerHTML = `
+                <img src="${img}">
+                <h3>${name}</h3>
+                <p>${price} روپے</p>
+                <button onclick="addToCart('${name}', ${price})">کارٹ میں ڈالیں</button>
+            `;
+            store.appendChild(newDiv);
+            alert("پروڈکٹ اسٹور میں نظر آنے لگی ہے!");
+        }
+    }
+
+    function addToCart(name, price) {
+        cart.push({name, price});
+        total += parseInt(price);
+        document.getElementById('cart-list').innerHTML = cart.map(i => `<div>• ${i.name}</div>`).join('');
+        document.getElementById('total-amount').innerText = total;
+    }
+
+    function openForm() { 
+        if(cart.length > 0) document.getElementById('order-form').style.display = 'block'; 
+    }
+
+    function sendOrder() {
+        const name = document.getElementById('cust-name').value;
+        const phone = document.getElementById('cust-phone').value;
+        const address = document.getElementById('cust-address').value;
+        const myWhatsApp = "923343130062"; 
+
+        let msg = `*نیا آرڈر*%0Aنام: ${name}%0Aفون: ${phone}%0Aپتہ: ${address}%0Aٹوٹل: ${total}`;
+        window.open(`https://wa.me/${myWhatsApp}?text=${msg}`, '_blank');
+    }
+</script>
+
+</body>
+</html>
